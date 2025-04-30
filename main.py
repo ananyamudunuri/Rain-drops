@@ -12,6 +12,9 @@ from config import SLIDER_POS, SLIDER_WIDTH, RAIN_SPEED_MIN, RAIN_SPEED_MAX
 
 def main():
     pygame.init()
+    background = pygame.image.load("assets/background.png")
+    background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Rain Simulation")
     clock = pygame.time.Clock()
@@ -32,7 +35,8 @@ def main():
 
     running = True
     while running:
-        screen.fill((30, 30, 30))
+        screen.blit(background, (0, 0))
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

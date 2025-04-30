@@ -24,7 +24,7 @@ def main():
     space = pymunk.Space()
     space.gravity = (0, GRAVITY)
 
-    # Create bucket object
+    # Create bucket object with image
     bucket = Bucket(space)
 
     # Raindrops list
@@ -44,14 +44,14 @@ def main():
                 running = False
             slider.handle_event(event)
 
-        # Handle keyboard movement
+        # Handle arrow key movement
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             bucket.move("left")
         if keys[pygame.K_RIGHT]:
             bucket.move("right")
 
-        # Rain drop generation
+        # Spawn raindrops
         rain_speed = slider.val
         frame_count += 1
         if frame_count >= (FPS // max(rain_speed, 1)):
@@ -59,19 +59,25 @@ def main():
             drops.append(drop)
             frame_count = 0
 
-        # Physics step
+        # Physics update
         space.step(1 / FPS)
 
-        # Draw bucket
-        for shape in bucket.get_shapes():
-            a = shape.a.rotated(shape.body.angle) + bucket.body.position
-            b = shape.b.rotated(shape.body.angle) + bucket.body.position
-            pygame.draw.line(screen, (255, 255, 255), a, b, 5)
-
-        # Draw raindrops
+        # Draw drops
         draw_drops(screen, drops)
 
-        # Draw slider
+        # Check if drops hit the bucket
+        for drop in drops[:]:
+            dx = abs(drop.body.position.x - bucket.body.position.x)
+            dy = bucket.body.position.y - drop.body.position.y
+            if dx < 35 and 0 < dy < 80:  # Inside bucket zone
+                bucket.increase_fill(2)
+                space.remove(drop, drop.body)
+                drops.remove(drop)
+
+        # Draw bucket (with water fill)
+        bucket.draw(screen)
+
+        # Draw rain speed slider
         slider.draw(screen)
 
         pygame.display.flip()

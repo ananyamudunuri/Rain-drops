@@ -5,13 +5,20 @@ import pymunk
 
 from config import WIDTH, HEIGHT, GRAVITY, FPS
 from rain.drop import create_drop
-from rain.bucket import Bucket
+from rain.person import Person
 from utils.draw import draw_drops
 from utils.slider import Slider
 from config import SLIDER_POS, SLIDER_WIDTH, RAIN_SPEED_MIN, RAIN_SPEED_MAX
 
 def main():
     pygame.init()
+    pygame.mixer.init()
+
+    # 🎵 Play background music automatically
+    pygame.mixer.music.load("assets/music.wav")
+    pygame.mixer.music.set_volume(1.0)
+    pygame.mixer.music.play(-1)
+
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Rain Simulation")
     clock = pygame.time.Clock()
@@ -20,17 +27,15 @@ def main():
     background = pygame.image.load("assets/background.png")
     background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 
-    # Set up physics
+    # Set up physics space
     space = pymunk.Space()
     space.gravity = (0, GRAVITY)
 
-    # Create bucket object with image
-    bucket = Bucket(space)
+    # Create person
+    person = Person(space)
 
-    # Raindrops list
+    # Drops and slider setup
     drops = []
-
-    # Slider for rain speed
     slider = Slider(SLIDER_POS, SLIDER_WIDTH, RAIN_SPEED_MIN, RAIN_SPEED_MAX, 10)
     rain_speed = slider.val
     frame_count = 0
@@ -44,14 +49,14 @@ def main():
                 running = False
             slider.handle_event(event)
 
-        # Handle arrow key movement
+        # Person movement
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
-            bucket.move("left")
+            person.move("left")
         if keys[pygame.K_RIGHT]:
-            bucket.move("right")
+            person.move("right")
 
-        # Spawn raindrops
+        # Drop generation
         rain_speed = slider.val
         frame_count += 1
         if frame_count >= (FPS // max(rain_speed, 1)):
@@ -59,25 +64,23 @@ def main():
             drops.append(drop)
             frame_count = 0
 
-        # Physics update
+        # Step the physics simulation
         space.step(1 / FPS)
 
-        # Draw drops
-        draw_drops(screen, drops)
-
-        # Check if drops hit the bucket
+        # Shrink and remove drops that hit the person
         for drop in drops[:]:
-            dx = abs(drop.body.position.x - bucket.body.position.x)
-            dy = bucket.body.position.y - drop.body.position.y
-            if dx < 35 and 0 < dy < 80:  # Inside bucket zone
-                bucket.increase_fill(2)
-                space.remove(drop, drop.body)
-                drops.remove(drop)
+            dx = abs(drop.body.position.x - person.body.position.x)
+            dy = person.body.position.y - drop.body.position.y
 
-        # Draw bucket (with water fill)
-        bucket.draw(screen)
+            if dx < 35 and 0 < dy < 90:
+                drop.custom_radius *= 0.9  # shrink the visual radius
+                if drop.custom_radius < 1:
+                    space.remove(drop, drop.body)
+                    drops.remove(drop)
 
-        # Draw rain speed slider
+        # Draw elements
+        draw_drops(screen, drops)
+        person.draw(screen)
         slider.draw(screen)
 
         pygame.display.flip()
@@ -87,3 +90,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

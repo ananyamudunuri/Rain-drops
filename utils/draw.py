@@ -7,4 +7,8 @@ def draw_drops(screen, shapes):
     for shape in shapes:
         if hasattr(shape, 'body'):
             pos = shape.body.position
-            pygame.draw.circle(screen, (0, 50, 220), (int(pos.x), int(pos.y)), DROP_RADIUS)
+            # Use shape.radius (can shrink dynamically)
+            radius = int(getattr(shape, "custom_radius", DROP_RADIUS))
+            if radius > 0:
+                pygame.draw.circle(screen, (0, 100, 255), (int(pos.x), int(pos.y)), radius)
+

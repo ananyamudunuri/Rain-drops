@@ -13,6 +13,8 @@ def create_drop(space):
     body = pymunk.Body(mass, pymunk.moment_for_circle(mass, 0, radius))
     body.position = (x, y)
     shape = pymunk.Circle(body, radius)
+    shape.custom_radius = radius  # manually track radius
+
     shape.elasticity = 0.6
 
     space.add(body, shape)

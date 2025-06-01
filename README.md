@@ -1,8 +1,8 @@
-Rain-drops Simulation 🌧️
+# Rain-drops Simulation 🌧️
 
-This is a fun physics-based rain simulation built in Python using Pygame and Pymunk. You control a bucket or a person to catch falling rain drops, with realistic bounce and sound effects.
+This is a fun rain simulation built in Python using Pygame and Pymunk. You control a bucket or a person to catch falling rain drops, with realistic bounce and sound effects.
 
-🎨 Features
+## 🎨 Features
 
 Adjustable rain speed via a slider
 
@@ -16,29 +16,28 @@ Interactive control (move left/right to catch rain)
 
 Splash effect when raindrops hit the object
 
-🚀 Getting Started
+## 🚀 Getting Started
 
 1. Clone the repo
 
-git clone https://github.com/ananyamudunuri/Rain-drops.git
-cd Rain-drops
+<pre>git clone https://github.com/ananyamudunuri/Rain-drops.git
+cd Rain-drops </pre>
 
 2. Set up the virtual environment
 
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+<pre>python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate </pre>
 
 3. Install the dependencies
 
-pip install -r requirements.txt
+<pre>pip install -r requirements.txt </pre>
 
 4. Run the simulation
 
-python main.py
+<pre>python main.py</pre>
 
-📁 Project Structure
-
-rain_sim/
+## 📁 Project Structure
+<pre>rain_sim/
 ├── assets/                # Images, background, music
 ├── main.py                # Main execution file
 ├── config.py              # Constants and settings
@@ -49,15 +48,16 @@ rain_sim/
 ├── utils/
 │   ├── draw.py            # Rendering logic
 │   └── slider.py          # Custom rain-speed slider
-└── requirements.txt       # Python dependencies
+└── requirements.txt       # Python dependencies 
+  </pre>
 
-🎧 Credits
+## 🎧 Credits
 
 Background music: royalty-free rain audio
 
 Built with: Pygame + Pymunk
 
-🚀 Future Ideas
+## 🚀 Future Ideas
 
 Animate bucket filling with water
 
@@ -67,5 +67,5 @@ Score counter
 
 Mobile-friendly controls
 
-Made with ❤️ by Ananya Mudunuri
+## Made with ❤️ by Ananya Mudunuri
 

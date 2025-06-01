@@ -5,7 +5,7 @@ import pymunk
 
 from config import WIDTH, HEIGHT, GRAVITY, FPS
 from rain.drop import create_drop
-from rain.person import Person
+from rain.bucket import Bucket  # ✅ updated
 from utils.draw import draw_drops
 from utils.slider import Slider
 from config import SLIDER_POS, SLIDER_WIDTH, RAIN_SPEED_MIN, RAIN_SPEED_MAX
@@ -15,7 +15,7 @@ def main():
     pygame.mixer.init()
 
     # 🎵 Play background music automatically
-    pygame.mixer.music.load("assets/music.wav")
+    pygame.mixer.music.load("assets/light-rain.mp3")
     pygame.mixer.music.set_volume(1.0)
     pygame.mixer.music.play(-1)
 
@@ -31,8 +31,8 @@ def main():
     space = pymunk.Space()
     space.gravity = (0, GRAVITY)
 
-    # Create person
-    person = Person(space)
+    # Create bucket instead of person
+    bucket = Bucket(space)
 
     # Drops and slider setup
     drops = []
@@ -49,12 +49,12 @@ def main():
                 running = False
             slider.handle_event(event)
 
-        # Person movement
+        # Bucket movement
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
-            person.move("left")
+            bucket.move("left")
         if keys[pygame.K_RIGHT]:
-            person.move("right")
+            bucket.move("right")
 
         # Drop generation
         rain_speed = slider.val
@@ -67,10 +67,10 @@ def main():
         # Step the physics simulation
         space.step(1 / FPS)
 
-        # Shrink and remove drops that hit the person
+        # Shrink and remove drops that hit the bucket
         for drop in drops[:]:
-            dx = abs(drop.body.position.x - person.body.position.x)
-            dy = person.body.position.y - drop.body.position.y
+            dx = abs(drop.body.position.x - bucket.body.position.x)
+            dy = bucket.body.position.y - drop.body.position.y
 
             if dx < 35 and 0 < dy < 90:
                 drop.custom_radius *= 0.9  # shrink the visual radius
@@ -78,9 +78,9 @@ def main():
                     space.remove(drop, drop.body)
                     drops.remove(drop)
 
-        # Draw elements
+        # Draw everything
         draw_drops(screen, drops)
-        person.draw(screen)
+        bucket.draw(screen)
         slider.draw(screen)
 
         pygame.display.flip()
@@ -90,4 +90,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
